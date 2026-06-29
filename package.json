@@ -1,0 +1,38 @@
+{
+  "name": "qa-kit",
+  "version": "0.1.0",
+  "description": "Reusable AI-native QA engine for Playwright: self-healing locators, requirement traceability, oasdiff contract gates, Allure dashboard, exploratory agent, flakiness/quarantine policy — wired by a CLI the pipeline calls. The app keeps only its specs, requirements, auth/seam adapters and config.",
+  "license": "MIT",
+  "type": "commonjs",
+  "engines": { "node": ">=20" },
+  "bin": { "qa-kit": "bin/qa-kit.js" },
+  "exports": {
+    "./config": "./dist/config.js",
+    "./adapters": "./dist/adapters.js",
+    "./fixtures": "./dist/adapters.js",
+    "./self-healing": "./dist/support/self-healing.js",
+    "./healing-fixture": "./dist/support/healing-fixture.js",
+    "./reporters": "./dist/reporters/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": ["bin", "lib", "dist", "templates", "tsconfig.base.json"],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepare": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "allure-commandline": "^2.43.0",
+    "allure-playwright": "^3.10.2",
+    "js-yaml": "^4.2.0"
+  },
+  "peerDependencies": {
+    "@playwright/test": ">=1.49.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.3"
+  }
+}

@@ -1,0 +1,27 @@
+# Reusable QA gate (GitLab CI). `include` this in the consuming repo's .gitlab-ci.yml.
+# Assumes qa-kit is a devDependency and the app is reachable at WEB_BASE.
+.qa-kit:
+  image: mcr.microsoft.com/playwright:v1.61.0-noble
+  variables:
+    CONTRACT_MODE: "advisory"
+  before_script:
+    - npm ci
+  script:
+    - npx playwright test
+    - npx qa-kit quarantine || true
+    - npx qa-kit contract || true        # oasdiff: install via image/docker or oasdiff-action equivalent
+    - npx qa-kit report
+    - npx qa-kit dashboard || true
+  artifacts:
+    when: always
+    reports:
+      junit: artifacts/reports/junit.xml
+    paths:
+      - artifacts/allure-report
+      - artifacts/reports
+      - docs/traceability-matrix.md
+      - docs/compliance/evidence-pack.md
+    expire_in: 1 week
+
+qa:
+  extends: .qa-kit

@@ -1,0 +1,52 @@
+# Reusable QA gate (GitHub Actions). A consumer repo references this workflow; it
+# assumes qa-kit is a devDependency and the app is reachable at WEB_BASE.
+#
+#   # .github/workflows/qa.yml in the consuming repo
+#   name: QA
+#   on: { pull_request: {}, push: { branches: [main] } }
+#   jobs:
+#     qa: { uses: ember/qa-kit/.github/workflows/qa.yml@v0, secrets: inherit }
+name: QA (qa-kit)
+on:
+  workflow_call:
+    inputs:
+      web_base: { type: string, default: 'http://localhost:3000' }
+      contract_mode: { type: string, default: 'advisory' }
+      node_version: { type: string, default: '20' }
+
+permissions: { contents: read, pull-requests: write }
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    env: { CI: 'true', WEB_BASE: '${{ inputs.web_base }}', CONTRACT_MODE: '${{ inputs.contract_mode }}' }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '${{ inputs.node_version }}', cache: npm }
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: E2E suite
+        run: npx playwright test
+      - name: Contract diff (oasdiff)
+        if: always()
+        uses: oasdiff/oasdiff-action/breaking@main
+        continue-on-error: true
+      - name: QA gate (reports + dashboard + PR comment)
+        if: always()
+        continue-on-error: true
+        env: { GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' }
+        run: |
+          npx qa-kit quarantine || true
+          npx qa-kit report
+          npx qa-kit dashboard || true
+          npx qa-kit gate || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qa
+          path: |
+            artifacts/allure-report
+            artifacts/reports
+            docs/traceability-matrix.md
+            docs/compliance/evidence-pack.md
