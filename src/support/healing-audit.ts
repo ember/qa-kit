@@ -7,7 +7,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { HEALING_AUDIT_DIR } from './paths';
 
-export type HealOutcome = 'healed' | 'no_heal_needed' | 'heal_failed';
+export type HealOutcome = 'healed' | 'heal_failed';
 
 export interface HealRecord {
   ts: string;
@@ -33,16 +33,4 @@ export function recordHeal(rec: HealRecord): void {
   } catch {
     /* never let audit IO break a test run */
   }
-}
-
-export function readHealRecords(): HealRecord[] {
-  try {
-    return fs.readFileSync(AUDIT_FILE, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l) as HealRecord);
-  } catch {
-    return [];
-  }
-}
-
-export function resetHealAudit(): void {
-  try { fs.rmSync(AUDIT_FILE, { force: true }); } catch { /* ignore */ }
 }
