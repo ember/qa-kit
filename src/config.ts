@@ -16,7 +16,6 @@ import type { PlaywrightTestConfig, Project, ReporterDescription } from '@playwr
 export interface QaConfigOptions {
   testDir?: string;
   webBase?: string;
-  apiBase?: string;
   projects?: Project[];
   webServer?: PlaywrightTestConfig['webServer'];
   workers?: PlaywrightTestConfig['workers'];
@@ -28,18 +27,14 @@ export interface QaConfigOptions {
   overrides?: Partial<PlaywrightTestConfig>;
 }
 
-function reporterModule(spec: string): string {
-  try { return require.resolve(spec); } catch { return spec; }
-}
-
 export function definePlaywrightConfig(opts: QaConfigOptions = {}): PlaywrightTestConfig {
   const webBase = opts.webBase || process.env.WEB_BASE || 'http://localhost:3000';
   const reporter: ReporterDescription[] = [
     ['list'],
     ['json', { outputFile: 'artifacts/reports/results.json' }],
     ['junit', { outputFile: 'artifacts/reports/junit.xml' }],
-    [reporterModule('allure-playwright'), { resultsDir: 'allure-results', detail: true }],
-    [reporterModule('qa-kit/reporters')],
+    ['allure-playwright', { resultsDir: 'allure-results', detail: true }],
+    ['qa-kit/reporters'],
     ...(opts.reporters || []),
   ];
 

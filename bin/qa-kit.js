@@ -19,7 +19,6 @@ const fs = require('fs');
 
 process.env.QA_PROJECT_DIR = process.env.QA_PROJECT_DIR || process.cwd();
 const ROOT = process.env.QA_PROJECT_DIR;
-const PKG = path.resolve(__dirname, '..');
 
 function dashboard() {
   const allure = require('allure-commandline');
@@ -70,7 +69,19 @@ function init() {
   return 0;
 }
 
-function help() { console.log(fs.readFileSync(path.join(PKG, 'bin/qa-kit.js'), 'utf8').split('\n').slice(3, 16).join('\n').replace(/^.\s?/gm, '')); return 0; }
+function help() {
+  console.log(`qa-kit — pipeline-facing CLI; runs against the current project (cwd).
+
+  qa-kit report      traceability matrix + compliance evidence pack
+  qa-kit dashboard   generate the Allure HTML report (artifacts/allure-report)
+  qa-kit contract    oasdiff breaking-change diff across contracts.json
+  qa-kit explore     exploratory crawl of WEB_BASE (advisory suggestions)
+  qa-kit quarantine  enforce @quarantine owner+expiry annotations
+  qa-kit gate        quarantine + contract + reports + PR comment (blocking)
+  qa-kit init        scaffold qa.config.json + a starter spec
+  qa-kit help`);
+  return 0;
+}
 
 const cmd = process.argv[2];
 const table = {

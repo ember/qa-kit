@@ -17,9 +17,9 @@ export interface AuthAdapter<Role extends string = string> {
 }
 
 /** How the app provisions and tears down isolated test data per test. */
-export interface TestDataSeam<Opts = unknown, WS = { workspaceId: string }> {
-  provision(opts?: Opts): Promise<WS>;
-  teardown(ws: WS): Promise<void>;
+export interface TestDataSeam<Opts = unknown> {
+  provision(opts?: Opts): Promise<{ workspaceId: string }>;
+  teardown(ws: { workspaceId: string }): Promise<void>;
 }
 
 export interface QaFixtureDeps<Role extends string = string, Opts = unknown> {

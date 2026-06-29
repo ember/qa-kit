@@ -9,29 +9,24 @@
   "exports": {
     "./config": "./dist/config.js",
     "./adapters": "./dist/adapters.js",
-    "./fixtures": "./dist/adapters.js",
-    "./self-healing": "./dist/support/self-healing.js",
     "./healing-fixture": "./dist/support/healing-fixture.js",
     "./reporters": "./dist/reporters/index.js",
     "./package.json": "./package.json"
   },
-  "files": ["bin", "lib", "dist", "templates", "tsconfig.base.json"],
+  "files": ["bin", "lib", "dist", "templates"],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "prepare": "tsc -p tsconfig.build.json"
   },
   "dependencies": {
-    "ajv": "^8.20.0",
     "allure-commandline": "^2.43.0",
-    "allure-playwright": "^3.10.2",
-    "js-yaml": "^4.2.0"
+    "allure-playwright": "^3.10.2"
   },
   "peerDependencies": {
     "@playwright/test": ">=1.49.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.1",
-    "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.10.5",
     "typescript": "^5.7.3"
   }
