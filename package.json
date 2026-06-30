@@ -1,6 +1,6 @@
 {
   "name": "qa-kit",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Reusable AI-native QA engine for Playwright: self-healing locators, requirement traceability, oasdiff contract gates, Allure dashboard, exploratory agent, flakiness/quarantine policy — wired by a CLI the pipeline calls. The app keeps only its specs, requirements, auth/seam adapters and config.",
   "license": "MIT",
   "type": "commonjs",

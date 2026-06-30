@@ -42,7 +42,7 @@ async function gate() {
   status |= require('../lib/quarantine').run();
   status |= require('../lib/contract-diff').run();
   await report();
-  try { await require('../lib/github-publish').run(); } catch (e) { console.warn('[gate] PR comment skipped:', e.message); }
+  try { await require('../lib/publish').run(); } catch (e) { console.warn('[gate] MR/PR comment skipped:', e.message); }
   return status ? 1 : 0;
 }
 
@@ -77,7 +77,8 @@ function help() {
   qa-kit contract    oasdiff breaking-change diff across contracts.json
   qa-kit explore     exploratory crawl of WEB_BASE (advisory suggestions)
   qa-kit quarantine  enforce @quarantine owner+expiry annotations
-  qa-kit gate        quarantine + contract + reports + PR comment (blocking)
+  qa-kit publish     post the QA summary to the MR/PR (GitHub or GitLab, auto-detected)
+  qa-kit gate        quarantine + contract + reports + MR/PR comment (blocking)
   qa-kit init        scaffold qa.config.json + a starter spec
   qa-kit help`);
   return 0;
@@ -86,7 +87,7 @@ function help() {
 const cmd = process.argv[2];
 const table = {
   report, dashboard, contract: () => require('../lib/contract-diff').run(), explore: () => require('../lib/explore').main(),
-  quarantine: () => require('../lib/quarantine').run(), gate, init, help, '--help': help, '-h': help,
+  quarantine: () => require('../lib/quarantine').run(), publish: () => require('../lib/publish').run().then(() => 0), gate, init, help, '--help': help, '-h': help,
 };
 const fn = table[cmd] || (cmd ? null : help);
 if (!fn) { console.error(`qa-kit: unknown command '${cmd}'. Try 'qa-kit help'.`); process.exit(2); }
